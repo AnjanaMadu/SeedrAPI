@@ -24,7 +24,7 @@ else:
 v = "v1.0"
 
 setup(
-    name='gofile2',
+    name='seedr',
     version=v,
     description='API wrapper for seedr.cc',
     url='https://github.com/AnjanaMadu/SeedrAPI',
