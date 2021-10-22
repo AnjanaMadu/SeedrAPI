@@ -14,12 +14,14 @@ class SeedrAPI:
             req = requests.post('https://www.seedr.cc/oauth_test/token.php', data=data)
             if 'access_token' in req.text:
                 self.token = req.json()['access_token']
+                return self.token
             else:
                 raise InvalidLogin('Invalid username and password combination.')
         elif token:
             req = requests.get(f'https://www.seedr.cc/api/folder?access_token={token}')
             if 'space_max' in req.text:
                 self.token = token
+                return self.token
             else:
                 raise InvalidToken('The access token provided is invalid.')
         else:
