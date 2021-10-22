@@ -1,6 +1,6 @@
 import requests
 from json import loads
-from .errors import (
+from . import (
     LoginRequired,
     InvalidLogin,
     InvalidToken,
@@ -66,5 +66,28 @@ class SeedrAPI:
             return loads(req.text)
 
     def delete_folder(self, id):
-        
-    
+        token = self.token
+        data = {'access_token':token, 'func':'delete', 'delete_arr':[{'type':'folder', 'id': id}]}
+        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
+        if 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
+
+    def delete_file(self, id):
+        token = self.token
+        data = {'access_token':token, 'func':'delete', 'delete_arr':[{'type':'file', 'id': id}]}
+        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
+        if 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
+
+    def rename(self, id, name):
+        token = self.token
+        data = {'access_token':token, 'func':'rename', 'rename_to':name, 'file_id':id}
+        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
+        if 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
