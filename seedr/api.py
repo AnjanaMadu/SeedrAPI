@@ -1,6 +1,6 @@
 import requests
 from json import loads
-from . import (
+from .errors import (
     LoginRequired,
     InvalidLogin,
     InvalidToken,
