@@ -1,4 +1,5 @@
 import requests
+from json import loads
 from .errors import (
     LoginRequired,
     InvalidLogin,
@@ -24,22 +25,46 @@ class SeedrAPI:
         else:
             raise LoginRequired('Account login required.')
 
-    def add(self, magnet):
-        token = self.token
-        data = {'access_token':token, 'func':'add_torrent', 'torrent_magnet':magnet}
-        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
-        if 'invalid_token' in req.text:
-            raise TokenExpired('Access token expired. Need to make new API Instance.')
-        else:
-            return req.text
-
-    def files(self):
+    def get_drive(self):
         token = self.token
         url = f'https://www.seedr.cc/api/folder?access_token={token}'
         req = requests.get(url)
         if 'invalid_token' in req.text:
             raise TokenExpired('Access token expired. Need to make new API Instance.')
         else:
-            return req.text
+            return loads(req.text)
 
+    def get_folder(self, id):
+        token = self.token
+        url = f'https://www.seedr.cc/api/folder/{id}?access_token={token}'
+        req = requests.get(url)
+        if 'access_denied' in req.text:
+            raise Exception('Folder id invalid.')
+        elif 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
+
+    def get_file(self, id):
+        token = self.token
+        data = {'access_token':token, 'func':'fetch_file', 'folder_file_id':id}
+        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
+        if 'access_denied' in req.text:
+            raise Exception('File id invalid.')
+        elif 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
+
+    def add_torrent(self, magnet):
+        token = self.token
+        data = {'access_token':token, 'func':'add_torrent', 'torrent_magnet':magnet}
+        req = requests.post('https://www.seedr.cc/oauth_test/resource.php', data=data)
+        if 'invalid_token' in req.text:
+            raise TokenExpired('Access token expired. Need to make new API Instance.')
+        else:
+            return loads(req.text)
+
+    def delete_folder(self, id):
+        
     
