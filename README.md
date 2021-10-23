@@ -6,7 +6,7 @@ Powered by [**@harp_tech**](https://github.com/harptechorg) ([_Telegram_](https:
 
 ## How to use
 
-- You can istall lib via [github](https://github.com/AnjanaMadu/SeedrAPI.git) or [pypi](https://pypi.org/project/seedr).
+- You can install lib via [github](https://github.com/AnjanaMadu/SeedrAPI.git) or [pypi](https://pypi.org/project/seedr).
 ```
 pip install seedr
 ```
