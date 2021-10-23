@@ -21,7 +21,7 @@ else:
     bdescription = "An Unofficial API wrapper for seedr.cc"
 
 # Version
-v = "v1.0.1"
+v = "v1.0"
 
 setup(
     name='seedr',
