@@ -4,14 +4,14 @@
 
 Powered by [**@harp_tech**](https://github.com/harptechorg) ([_Telegram_](https://t.me/harp_tech))
 
-## How to use
+## Installation
 
-- You can install lib via [github](https://github.com/AnjanaMadu/SeedrAPI.git) or [pypi](https://pypi.org/project/seedr).
 ```
 pip install seedr
 ```
 
-- Examples
+## Usage
+
 ```py
 # Import the lib
 from seedr import SeedrAPI
