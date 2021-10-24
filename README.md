@@ -1,4 +1,4 @@
-# <img src="https://graph.org/file/567afbf357f1ecbe98376.png" alt="seedr" height=50> Seedr API
+# <img src="https://graph.org/file/567afbf357f1ecbe98376.png" alt="seedr" height="25px"> Seedr API
 
 ### Unofficial API wrapper for seedr.cc <br> Inspired by [theabbie](https://github.com/theabbie)'s [**seedr-api**](https://github.com/theabbie/seedr-api)
 
