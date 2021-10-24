@@ -1,17 +1,17 @@
-# <img src="https://graph.org/file/567afbf357f1ecbe98376.png" alt="seedr" height=50> Seedr API
+# <img src="https://graph.org/file/567afbf357f1ecbe98376.png" alt="seedr" height="25px"> Seedr API
 
 ### Unofficial API wrapper for seedr.cc <br> Inspired by [theabbie](https://github.com/theabbie)'s [**seedr-api**](https://github.com/theabbie/seedr-api)
 
 Powered by [**@harp_tech**](https://github.com/harptechorg) ([_Telegram_](https://t.me/harp_tech))
 
-## How to use
+## Installation
 
-- You can install lib via [github](https://github.com/AnjanaMadu/SeedrAPI.git) or [pypi](https://pypi.org/project/seedr).
 ```
 pip install seedr
 ```
 
-- Examples
+## Usage
+
 ```py
 # Import the lib
 from seedr import SeedrAPI
