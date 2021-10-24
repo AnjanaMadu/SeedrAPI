@@ -18,7 +18,7 @@ from seedr import SeedrAPI
 
 # Login to account. You can login to your account by email and password or via access token.
 # After login an access token will retrieve. Don't care, It's for devs.
-seedr = SeerAPI(email='example@email.com', password='example')
+seedr = SeedrAPI(email='example@email.com', password='example')
 
 # Get all files and folders in your account
 files = seedr.get_drive()
