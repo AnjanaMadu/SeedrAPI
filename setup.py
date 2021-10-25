@@ -14,7 +14,7 @@ def read(filename):
 
 
 # Version
-with open('seedr/version.py', 'r', encoding='utf-8') as f: 
+with open('seedr/version.py', 'r', encoding='utf-8') as f:
     version = re.search(r"^__version__\s*=\s*'(.*)'.*$",
                         f.read(), flags=re.MULTILINE).group(1)
 
@@ -38,5 +38,6 @@ setup(
         'Topic :: Education',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.9',
+        "License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)"
     ]
 )
