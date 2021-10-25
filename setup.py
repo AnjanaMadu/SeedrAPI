@@ -14,11 +14,9 @@ else:
         'requests'
     ]
 
-if os.path.isfile('README.md'):
-    with open(('README.md'), encoding='utf-8') as readme:
-        bdescription = readme.read()
-else:
-    bdescription = "An Unofficial API wrapper for seedr.cc"
+def read(filename):
+    with open(filename, encoding='utf-8') as file:
+        return file.read()
 
 # Version
 v = "v1.1"
@@ -34,7 +32,7 @@ setup(
     packages=find_packages(),
     download_url=f"https://github.com/AnjanaMadu/SeedrAPI/releases/tag/{v}",
     keywords=['seedr', 'seedr-api', 'seedr.cc'],
-    long_description=bdescription,
+    long_description=read('README.md'),
     long_description_content_type='text/markdown',
     install_requires=reques,
     classifiers=[
