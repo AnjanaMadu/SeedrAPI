@@ -6,17 +6,11 @@ from setuptools import setup, find_packages
 
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
-if os.path.isfile('requirements.txt'):
-    with open('requirements.txt') as req:
-        reques = req.read().splitlines()
-else:
-    reques = [
-        'requests'
-    ]
 
 def read(filename):
     with open(filename, encoding='utf-8') as file:
         return file.read()
+
 
 # Version
 v = "v1.1"
@@ -34,7 +28,7 @@ setup(
     keywords=['seedr', 'seedr-api', 'seedr.cc'],
     long_description=read('README.md'),
     long_description_content_type='text/markdown',
-    install_requires=reques,
+    install_requires=['requests'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
