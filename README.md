@@ -3,7 +3,7 @@
 ### Unofficial API wrapper for seedr.cc <br> Inspired by [theabbie](https://github.com/theabbie)'s [**seedr-api**](https://github.com/theabbie/seedr-api)
 
 ## Docs & Examples
-Please go to [wiki](https://github.com/AnjanaMadu/SeedrAPI/issues)
+Please go to [wiki](https://github.com/AnjanaMadu/SeedrAPI/wiki/)
 
 ## Credits
 - [theabbie](https://github.com/theabbie) for his [seedr-api](https://github.com/theabbie/seedr-api)
