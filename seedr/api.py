@@ -104,7 +104,7 @@ class SeedrAPI:
         Delete a file from the account.
         :param `folder_file_id`: The file id.
         """
-        data = {"access_token": self.access_token, "func": "delete", "delete_arr": '[{"type":"folder","id":"' + folder_file_id + '"}]'}
+        data = {"access_token": self.access_token, "func": "delete", "delete_arr": '[{"type":"file","id":"' + folder_file_id + '"}]'}
         req = requests.post("https://www.seedr.cc/oauth_test/resource.php", data=data)
         if "access_denied" in req.text:
             raise Exception("File id invalid.")
