@@ -8,12 +8,34 @@ from .errors import (
 
 
 class SeedrAPI:
+    """A wrapper for the Seedr.cc API.
+
+    This class provides a simple interface to interact with the Seedr.cc API.
+    It handles authentication and provides methods for common API operations.
+
+    Args:
+        email (str, optional): The user's Seedr account email. Defaults to None.
+        password (str, optional): The user's Seedr account password. Defaults to None.
+        token (str, optional): An existing access token. Defaults to None.
+
+    Raises:
+        InvalidLogin: If the provided email and password are not valid.
+        InvalidToken: If the provided token is not valid.
+        LoginRequired: If no authentication credentials are provided.
+    """
+
     def __init__(self, email=None, password=None, token=None):
-        """
-        Initialize the SeedrAPI class. And login to account.
-        :param `email`: Seedr account email.
-        :param `password`: Seedr account password.
-        :param `token`: Seedr access token. (don't use this if you have email and password)
+        """Initializes the SeedrAPI client and authenticates the user.
+
+        Args:
+            email (str, optional): The user's Seedr account email. Defaults to None.
+            password (str, optional): The user's Seedr account password. Defaults to None.
+            token (str, optional): An existing access token. Defaults to None.
+
+        Raises:
+            InvalidLogin: If the provided email and password are not valid.
+            InvalidToken: If the provided token is not valid.
+            LoginRequired: If no authentication credentials are provided.
         """
         if email and password:
             data = {"grant_type": "password", "client_id": "seedr_chrome", "type": "login", "username": email, "password": password}
@@ -32,9 +54,15 @@ class SeedrAPI:
             raise LoginRequired("Account login required.")
 
     def get_drive(self):
-        """
-        Get the some information about the account. Including the space used, space max, and the list of folders.
-        :return: A dict of the account information.
+        """Retrieves information about the user's account.
+
+        This includes the space used, maximum space, and a list of root folders.
+
+        Returns:
+            dict: A dictionary containing account information.
+
+        Raises:
+            InvalidToken: If the access token is invalid.
         """
         req = requests.get(f"https://www.seedr.cc/api/folder?access_token={self.access_token}")
         if "invalid_token" in req.text:
@@ -43,10 +71,19 @@ class SeedrAPI:
             return json.loads(req.text)
 
     def get_folder(self, folder_id):
-        """
-        Get the some information about the folder. Including subfolders and files.
-        :param `folder_id`: The folder id.
-        :return: A dict of the folder information.
+        """Retrieves information about a specific folder.
+
+        This includes subfolders and files within the specified folder.
+
+        Args:
+            folder_id (str): The ID of the folder to retrieve.
+
+        Returns:
+            dict: A dictionary containing folder information.
+
+        Raises:
+            Exception: If the folder ID is invalid.
+            InvalidToken: If the access token has expired.
         """
         req = requests.get(f"https://www.seedr.cc/api/folder/{folder_id}?access_token={self.access_token}")
         if "access_denied" in req.text:
@@ -57,10 +94,19 @@ class SeedrAPI:
             return json.loads(req.text)
 
     def get_file(self, folder_file_id):
-        """
-        Get the some information about the file. Including the file name, file size, file hash, and download link.
-        :param `folder_file_id`: The file id.
-        :return: A dict of the file information.
+        """Retrieves information about a specific file.
+
+        This includes the file name, size, hash, and a download link.
+
+        Args:
+            folder_file_id (str): The ID of the file to retrieve.
+
+        Returns:
+            dict: A dictionary containing file information.
+
+        Raises:
+            Exception: If the file ID is invalid.
+            InvalidToken: If the access token has expired.
         """
         data = {"access_token": self.access_token, "func": "fetch_file", "folder_file_id": folder_file_id}
         req = requests.post("https://www.seedr.cc/oauth_test/resource.php", data=data)
@@ -72,10 +118,16 @@ class SeedrAPI:
             return json.loads(req.text)
 
     def add_torrent(self, torrent):
-        """
-        Add a torrent to the account.
-        :param `torrent`: Direct link to .torrent or magnet uri.
-        :return: A dict of the information about torrent.
+        """Adds a new torrent to the user's account.
+
+        Args:
+            torrent (str): The direct link to a .torrent file or a magnet URI.
+
+        Returns:
+            dict: A dictionary containing information about the added torrent.
+
+        Raises:
+            Exception: If there is an error adding the torrent.
         """
         data = {"access_token": self.access_token, "func": "add_torrent", "torrent_magnet": torrent}
         req = requests.post("https://www.seedr.cc/oauth_test/resource.php", data=data)
@@ -88,9 +140,14 @@ class SeedrAPI:
             return x
 
     def delete_folder(self, folder_id):
-        """
-        Delete a folder from the account.
-        :param `folder_id`: The folder id.
+        """Deletes a folder from the user's account.
+
+        Args:
+            folder_id (str): The ID of the folder to delete.
+
+        Raises:
+            Exception: If the folder ID is invalid.
+            InvalidToken: If the access token has expired.
         """
         data = {"access_token": self.access_token, "func": "delete", "delete_arr": '[{"type":"folder","id":"' + folder_id + '"}]'}
         req = requests.post("https://www.seedr.cc/oauth_test/resource.php", data=data)
@@ -100,9 +157,14 @@ class SeedrAPI:
             raise InvalidToken("Access token expired. Need to make new API Instance.")
 
     def delete_file(self, folder_file_id):
-        """
-        Delete a file from the account.
-        :param `folder_file_id`: The file id.
+        """Deletes a file from the user's account.
+
+        Args:
+            folder_file_id (str): The ID of the file to delete.
+
+        Raises:
+            Exception: If the file ID is invalid.
+            InvalidToken: If the access token has expired.
         """
         data = {"access_token": self.access_token, "func": "delete", "delete_arr": '[{"type":"file","id":"' + folder_file_id + '"}]'}
         req = requests.post("https://www.seedr.cc/oauth_test/resource.php", data=data)
