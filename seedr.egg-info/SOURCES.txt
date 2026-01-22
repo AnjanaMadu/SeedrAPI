@@ -1,0 +1,14 @@
+LICENSE
+README.md
+setup.py
+seedr/__init__.py
+seedr/__version__.py
+seedr/api.py
+seedr/errors.py
+seedr/models.py
+seedr.egg-info/PKG-INFO
+seedr.egg-info/SOURCES.txt
+seedr.egg-info/dependency_links.txt
+seedr.egg-info/not-zip-safe
+seedr.egg-info/requires.txt
+seedr.egg-info/top_level.txt

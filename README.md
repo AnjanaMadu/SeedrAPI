@@ -2,7 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/seedr.svg)](https://badge.fury.io/py/seedr)
 
-An unofficial API wrapper for [seedr.cc](https://www.seedr.cc/). This library provides a simple and convenient way to interact with the Seedr API from your Python applications.
+An unofficial API wrapper for [seedr.cc](https://www.seedr.cc/). This library provides a simple and convenient way to interact with the Seedr API from your Python applications with modern features like automatic token refresh, device authentication, and typed response models.
 
 ## Installation
 
@@ -12,9 +12,19 @@ You can install the package using pip:
 pip install seedr
 ```
 
+## Features
+
+- 🔐 Multiple authentication methods (email/password, token, device code)
+- 🔄 Automatic token refresh on expiration
+- 📦 Typed response models for better code completion
+- 🎯 Clean, modern Python API
+- ✅ Full backward compatibility with existing code
+
 ## Usage
 
-First, you need to create an instance of the `SeedrAPI` class. You can authenticate using your email and password, or by providing an existing access token.
+### Basic Authentication
+
+Create an instance of the `SeedrAPI` class using your email and password, or an existing access token:
 
 ```python
 from seedr import SeedrAPI
@@ -23,59 +33,221 @@ from seedr import SeedrAPI
 seedr = SeedrAPI(email='your_email@example.com', password='your_password')
 
 # Or, authenticate with an access token
-# seedr = SeedrAPI(token='your_access_token')
+seedr = SeedrAPI(token='your_access_token')
+
+# With both access and refresh tokens for auto-refresh
+seedr = SeedrAPI(token='access_token', refresh_token='refresh_token')
+```
+
+### Device Authentication
+
+For device-based authentication (useful for apps running on limited input devices):
+
+```python
+from seedr import SeedrAPI
+
+# Initialize without credentials
+seedr = SeedrAPI.__new__(SeedrAPI)
+seedr.__init__.__defaults__ = (None, None, None, None)
+
+# Get device code
+user_code = seedr.get_device_code()
+print(f"Go to seedr.cc and enter code: {user_code}")
+
+# Wait for user to authorize, then get token
+token = seedr.get_token(seedr.devc)
+print(f"Access token: {token}")
+```
+
+### Token Refresh
+
+Set up automatic token refresh callback:
+
+```python
+def on_token_refreshed(access_token, refresh_token):
+    print(f"Token refreshed! Save these tokens:")
+    print(f"Access: {access_token}")
+    print(f"Refresh: {refresh_token}")
+    # Save tokens to database/file
+
+seedr = SeedrAPI(email='email@example.com', password='password')
+seedr.on_token_refresh = on_token_refreshed
 ```
 
 ### Get Drive Information
 
-To get information about your account, including space usage and root folders:
+Get information about your account with typed response:
 
 ```python
+# Get root folder contents as typed object
+folder = seedr.get_folder_contents()
+print(f"Space used: {folder.space_used} / {folder.space_max}")
+print(f"Folders: {len(folder.folders)}")
+print(f"Files: {len(folder.files)}")
+print(f"Active torrents: {len(folder.torrents)}")
+
+# Access nested objects
+for file in folder.files:
+    print(f"File: {file.name}, Size: {file.size}, Video: {file.play_video}")
+
+# Legacy method (returns dict)
 drive_info = seedr.get_drive()
 print(drive_info)
 ```
 
 ### Get Folder Contents
 
-To get the contents of a specific folder:
+Get the contents of a specific folder:
 
 ```python
-folder_contents = seedr.get_folder('folder_id')
-print(folder_contents)
+# Modern method with typed response
+folder = seedr.get_folder_contents(folder_id=123)
+for subfolder in folder.folders:
+    print(f"Folder: {subfolder.name} ({subfolder.size} bytes)")
+
+# Legacy method (returns dict)
+folder_dict = seedr.get_folder(folder_id=123)
 ```
 
 ### Get File Information
 
-To get information about a specific file, including a download link:
+Get information about a specific file, including download URL:
 
 ```python
-file_info = seedr.get_file('file_id')
-print(file_info)
+# Modern method with typed response
+file_details = seedr.get_file_details(folder_file_id=456)
+print(f"Download URL: {file_details.url}")
+print(f"File name: {file_details.name}")
+
+# Legacy method (returns dict)
+file_info = seedr.get_file(folder_file_id=456)
+print(file_info['url'])
 ```
 
 ### Add a Torrent
 
-To add a torrent to your account using a magnet link or a direct link to a .torrent file:
+Add a torrent using a magnet link or direct .torrent file URL:
 
 ```python
-torrent_info = seedr.add_torrent('magnet:?xt=urn:btih:...')
-print(torrent_info)
+# Add magnet link
+result = seedr.add_torrent('magnet:?xt=urn:btih:...')
+print(result)
+
+# Or use the new method name
+result = seedr.add_magnet('magnet:?xt=urn:btih:...')
 ```
 
-### Delete a Folder
+### Delete Operations
 
-To delete a folder from your account:
+Delete files, folders, or torrents:
 
 ```python
-seedr.delete_folder('folder_id')
+# Delete a file
+seedr.delete_file(file_id=123)
+
+# Delete a folder
+seedr.delete_folder(folder_id=456)
+
+# Delete a torrent
+seedr.delete_torrent(torrent_id=789)
 ```
 
-### Delete a File
+### Create Archive
 
-To delete a file from your account:
+Create a downloadable archive from a folder:
 
 ```python
-seedr.delete_file('file_id')
+archive = seedr.create_archive(folder_id=123)
+print(f"Archive URL: {archive.archive_url}")
+print(f"Archive ID: {archive.archive_id}")
+```
+
+## Response Models
+
+The library provides typed response models for better code completion and type safety:
+
+- `SeedrFolderResponse` - Complete folder information with nested objects
+- `SeedrTorrent` - Torrent metadata (id, name, size, hash, progress)
+- `SeedrFolder` - Folder metadata (id, name, fullname, size)
+- `SeedrFile` - File metadata (name, size, hash, folder_id, play_video)
+- `SeedrFileDetails` - File details with download URL
+- `SeedrArchiveResponse` - Archive creation result with URL
+
+```python
+# Example: Iterate through all content
+folder = seedr.get_folder_contents()
+
+# Access torrents
+for torrent in folder.torrents:
+    print(f"Torrent: {torrent.name}, Progress: {torrent.progress}")
+
+# Access folders
+for subfolder in folder.folders:
+    print(f"Folder: {subfolder.name}, ID: {subfolder.id}")
+
+# Access files
+for file in folder.files:
+    print(f"File: {file.name}, Size: {file.size}")
+```
+
+## Error Handling
+
+The library raises specific exceptions for different types of errors:
+
+- `InvalidLogin`: Raised for incorrect username or password.
+- `InvalidToken`: Raised for an invalid or expired access token.
+- `LoginRequired`: Raised when no authentication credentials are provided.
+- `TokenExpired`: Raised when the access token has expired.
+
+You can handle these exceptions using a `try...except` block:
+
+```python
+from seedr import SeedrAPI
+from seedr.errors import InvalidLogin, InvalidToken
+
+try:
+    seedr = SeedrAPI(email='wrong@example.com', password='wrong_password')
+except InvalidLogin as e:
+    print(f"Invalid login credentials: {e}")
+
+try:
+    folder = seedr.get_folder_contents()
+except InvalidToken:
+    print("Token expired, please re-authenticate")
+```
+
+## Migration Guide
+
+If you're using the old API, your code will continue to work without changes. However, you can take advantage of new features:
+
+### Old way (still works):
+```python
+seedr = SeedrAPI(email='email', password='pass')
+drive = seedr.get_drive()  # Returns dict
+print(drive['space_used'])
+```
+
+### New way (recommended):
+```python
+seedr = SeedrAPI(email='email', password='pass')
+folder = seedr.get_folder_contents()  # Returns typed object
+print(folder.space_used)  # Better code completion
+```
+
+### New features available:
+```python
+# Token refresh callback
+seedr.on_token_refresh = lambda access, refresh: save_tokens(access, refresh)
+
+# Device authentication
+user_code = seedr.get_device_code()
+token = seedr.get_token(seedr.devc)
+
+# Create archives
+archive = seedr.create_archive(folder_id=123)
+
+# Delete torrents
+seedr.delete_torrent(torrent_id=456)
 ```
 
 ## Error Handling
